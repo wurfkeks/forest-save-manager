@@ -1,3 +1,20 @@
+/*
+ * (C) Copyright 2015 Stanley Förster
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the GNU Lesser General Public License
+ * (LGPL) version 2.1 which accompanies this distribution, and is available at
+ * http://www.gnu.org/licenses/lgpl-2.1.html
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * Contributors:
+ *     Stanley F. <stanley.foerster@gmail.com>
+ */
+
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QDebug>
@@ -21,7 +38,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->table_backups->setModel(&mBackupModel);
 
     connect(ui->btn_browse, &QPushButton::clicked, this, &MainWindow::openFileBrowser);
-    connect(ui->actionBrowse, &QAction::triggered, this, &MainWindow::openFileBrowser);
     connect(ui->edit_path, &QLineEdit::textChanged, this, &MainWindow::changePath);
     connect(ui->table_current->selectionModel(), &QItemSelectionModel::selectionChanged, this, &MainWindow::currentSelectionChanged);
     connect(ui->table_backups->selectionModel(), &QItemSelectionModel::selectionChanged, this, &MainWindow::backupSelectionChanged);
@@ -135,4 +151,17 @@ void MainWindow::deleteSavegame() {
             QFile(sourcePath).remove();
         }
     }
+}
+
+void MainWindow::aboutFSM() {
+    QMessageBox::about(this, "About ForestSaveManager",
+                       "Forest Save Manager\n"
+                       "Version: 1.0\n"
+                       "Creator: Stanley F. <stanley.foerster@gmail.com>\n"
+                       "Code: https://github.com/wurfkeks/forest-save-manager\n"
+                       "\u00A9 2015");
+}
+
+void MainWindow::aboutQt() {
+    QMessageBox::aboutQt(this, "About Qt");
 }
