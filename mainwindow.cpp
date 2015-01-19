@@ -17,7 +17,6 @@
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include <QDebug>
 #include <QFileDialog>
 #include <QProcessEnvironment>
 #include <QInputDialog>
@@ -35,7 +34,11 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->btnbox_backups->button(QDialogButtonBox::Ok)->setText("Restore");
     ui->btnbox_backups->button(QDialogButtonBox::Cancel)->setText("Delete");
     ui->table_current->setModel(&mCurrentModel);
+    ui->table_current->hideColumn(1);
+    ui->table_current->hideColumn(2);
     ui->table_backups->setModel(&mBackupModel);
+    ui->table_backups->hideColumn(1);
+    ui->table_backups->hideColumn(2);
 
     connect(ui->btn_browse, &QPushButton::clicked, this, &MainWindow::openFileBrowser);
     connect(ui->edit_path, &QLineEdit::textChanged, this, &MainWindow::changePath);
@@ -120,7 +123,6 @@ void MainWindow::backupSavegame() {
             return;
         }
 
-qDebug() << "File Path:" << mCurrentModel.data(index, QFileSystemModel::FilePathRole).toString();
         QString fileName = mCurrentModel.data(index, QFileSystemModel::FileNameRole).toString();
         QString sourcePath = mCurrentModel.rootPath()+"/"+fileName;
         QString destPath = mBackupModel.rootPath()+"/"+newFileName;
@@ -135,8 +137,9 @@ void MainWindow::restoreSavegame() {
         QString backupFileName = mBackupModel.data(index, QFileSystemModel::FileNameRole).toString();
         QString sourcePath = mBackupModel.rootPath()+"/"+backupFileName;
         QString destPath = mCurrentModel.rootPath()+"/"+SAVEGAME_FILENAME;
-
-        if (QMessageBox::Ignore == QMessageBox::warning(this, "Restore Savegame", "You are about to override the curent savegame. This cannot be undone. You may want to do a backup first!", QMessageBox::Ignore, QMessageBox::Abort)) {
+        QFile saveFile(destPath);
+        if (!saveFile.exists() || (QMessageBox::Ignore == QMessageBox::warning(this, "Restore Savegame", "You are about to override the curent savegame. This cannot be undone. You may want to do a backup first!", QMessageBox::Ignore, QMessageBox::Abort))) {
+            saveFile.remove();
             QFile::copy(sourcePath, destPath);
         }
     }
