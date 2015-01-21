@@ -127,6 +127,10 @@ void MainWindow::backupSavegame() {
         QString sourcePath = mCurrentModel.rootPath()+"/"+fileName;
         QString destPath = mBackupModel.rootPath()+"/"+newFileName;
 
+        QFile destFile(destPath);
+        if (destFile.exists())
+            destFile.remove();
+
         QFile::copy(sourcePath, destPath);
     }
 }
@@ -159,7 +163,7 @@ void MainWindow::deleteSavegame() {
 void MainWindow::aboutFSM() {
     QMessageBox::about(this, "About ForestSaveManager",
                        "Forest Save Manager\n"
-                       "Version: 1.0\n"
+                       "Version: 1.0.1\n"
                        "Creator: Stanley F. <stanley.foerster@gmail.com>\n"
                        "Code: https://github.com/wurfkeks/forest-save-manager\n"
                        "\u00A9 2015");
